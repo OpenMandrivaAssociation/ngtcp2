@@ -15,14 +15,18 @@
 Summary:	An implementation of the RFC9000 QUIC protocol
 Name:		ngtcp2
 Version:	0.13.1
-Release:	1
+Release:	2
 License:	MIT
 Group:		System/Libraries
 URL:		https://github.com/ngtcp2/ngtcp2
 Source0:	https://github.com/ngtcp2/ngtcp2/releases/download/v%{version}/ngtcp2-%{version}.tar.xz
 BuildRequires:	cmake ninja
+BuildRequires:	pkgconfig(openssl)
+BuildRequires:	pkgconfig(gnutls)
 %if %{with compat32}
 BuildRequires:	libc6
+BuildRequires:	devel(libssl)
+BuildRequires:	devel(libgnutls)
 %endif
 
 %description
@@ -66,10 +70,16 @@ for building applications with libngtcp2.
 %autosetup -p1 -n %{name}-%{version}
 %if %{with compat32}
 #define build_ldflags -O2 -fno-lto
-%cmake32 -G Ninja -DENABLE_STATIC_LIB=OFF
+%cmake32 -G Ninja \
+	-DENABLE_STATIC_LIB=OFF \
+	-DENABLE_OPENSSL:BOOL=ON \
+	-DENABLE_GNUTLS:BOOL=ON
 cd ..
 %endif
-%cmake -G Ninja -DENABLE_STATIC_LIB=OFF
+%cmake -G Ninja \
+	-DENABLE_STATIC_LIB=OFF \
+	-DENABLE_OPENSSL:BOOL=ON \
+	-DENABLE_GNUTLS:BOOL=ON
 
 %build
 %if %{with compat32}
@@ -87,6 +97,9 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %ninja_install -C build32
 %endif
 %ninja_install -C build
+
+%libpackage ngtcp2_crypto_openssl 4
+%libpackage ngtcp2_crypto_gnutls 4
 
 %files
 
@@ -106,4 +119,7 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %files -n %{devel32name}
 %{_prefix}/lib/pkgconfig/*.pc
 %{_prefix}/lib/*.so
+
+%lib32package ngtcp2_crypto_openssl 4
+%lib32package ngtcp2_crypto_gnutls 4
 %endif
