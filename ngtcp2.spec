@@ -15,7 +15,7 @@
 Summary:	An implementation of the RFC9000 QUIC protocol
 Name:		ngtcp2
 Version:	0.13.1
-Release:	2
+Release:	3
 License:	MIT
 Group:		System/Libraries
 URL:		https://github.com/ngtcp2/ngtcp2
