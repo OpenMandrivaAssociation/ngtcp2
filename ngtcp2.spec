@@ -15,7 +15,7 @@
 Summary:	An implementation of the RFC9000 QUIC protocol
 Name:		ngtcp2
 Version:	0.17.0
-Release:	1
+Release:	2
 License:	MIT
 Group:		System/Libraries
 URL:		https://github.com/ngtcp2/ngtcp2
@@ -103,6 +103,13 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %ninja_install -C build32
 %endif
 %ninja_install -C build
+
+# Fix stuff the CMakeLists.txt files ignore
+if [ -e %{buildroot}%{_includedir}/ngtcp2/ngtcp2_crypto_quictls.h ]; then
+	echo "QuicTLS installation has been fixed, remove the workaround"
+	exit 1
+fi
+cp crypto/includes/ngtcp2/ngtcp2_crypto_quictls.h %{buildroot}%{_includedir}/ngtcp2/
 
 %libpackage ngtcp2_crypto_quictls 0
 %libpackage ngtcp2_crypto_gnutls 6
