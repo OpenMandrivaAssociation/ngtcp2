@@ -6,7 +6,7 @@
 %bcond_with compat32
 %endif
 
-%define major 10
+%define major 14
 %define libname %mklibname ngtcp2
 %define develname %mklibname -d ngtcp2
 %define lib32name libngtcp2
@@ -14,8 +14,8 @@
 
 Summary:	An implementation of the RFC9000 QUIC protocol
 Name:		ngtcp2
-Version:	0.13.1
-Release:	3
+Version:	0.17.0
+Release:	1
 License:	MIT
 Group:		System/Libraries
 URL:		https://github.com/ngtcp2/ngtcp2
@@ -68,6 +68,12 @@ for building applications with libngtcp2.
 
 %prep
 %autosetup -p1 -n %{name}-%{version}
+if [ -e crypto/includes/ngtcp2/ngtcp2_crypto__openssl.h ]; then
+	echo "OpenSSL support is there again, remove the workaround"
+	exit 1
+fi
+ln -s ngtcp2_crypto_quictls.h crypto/includes/ngtcp2/ngtcp2_crypto_openssl.h
+
 %if %{with compat32}
 #define build_ldflags -O2 -fno-lto
 %cmake32 -G Ninja \
@@ -98,8 +104,8 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %endif
 %ninja_install -C build
 
-%libpackage ngtcp2_crypto_openssl 4
-%libpackage ngtcp2_crypto_gnutls 4
+%libpackage ngtcp2_crypto_quictls 0
+%libpackage ngtcp2_crypto_gnutls 6
 
 %files
 
@@ -120,6 +126,6 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %{_prefix}/lib/pkgconfig/*.pc
 %{_prefix}/lib/*.so
 
-%lib32package ngtcp2_crypto_openssl 4
-%lib32package ngtcp2_crypto_gnutls 4
+%lib32package ngtcp2_crypto_quictls 0
+%lib32package ngtcp2_crypto_gnutls 6
 %endif
