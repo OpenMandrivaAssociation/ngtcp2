@@ -6,7 +6,7 @@
 %bcond_with compat32
 %endif
 
-%define major 14
+%define major 15
 %define libname %mklibname ngtcp2
 %define develname %mklibname -d ngtcp2
 %define lib32name libngtcp2
@@ -14,8 +14,8 @@
 
 Summary:	An implementation of the RFC9000 QUIC protocol
 Name:		ngtcp2
-Version:	0.17.0
-Release:	2
+Version:	0.19.0
+Release:	1
 License:	MIT
 Group:		System/Libraries
 URL:		https://github.com/ngtcp2/ngtcp2
@@ -104,15 +104,8 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %endif
 %ninja_install -C build
 
-# Fix stuff the CMakeLists.txt files ignore
-if [ -e %{buildroot}%{_includedir}/ngtcp2/ngtcp2_crypto_quictls.h ]; then
-	echo "QuicTLS installation has been fixed, remove the workaround"
-	exit 1
-fi
-cp crypto/includes/ngtcp2/ngtcp2_crypto_quictls.h %{buildroot}%{_includedir}/ngtcp2/
-
-%libpackage ngtcp2_crypto_quictls 0
-%libpackage ngtcp2_crypto_gnutls 6
+%libpackage ngtcp2_crypto_quictls 1
+%libpackage ngtcp2_crypto_gnutls 7
 
 %files
 
@@ -133,6 +126,6 @@ cp crypto/includes/ngtcp2/ngtcp2_crypto_quictls.h %{buildroot}%{_includedir}/ngt
 %{_prefix}/lib/pkgconfig/*.pc
 %{_prefix}/lib/*.so
 
-%lib32package ngtcp2_crypto_quictls 0
-%lib32package ngtcp2_crypto_gnutls 6
+%lib32package ngtcp2_crypto_quictls 1
+%lib32package ngtcp2_crypto_gnutls 7
 %endif
