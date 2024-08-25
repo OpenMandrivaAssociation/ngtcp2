@@ -6,7 +6,7 @@
 %bcond_with compat32
 %endif
 
-%define major 15
+%define major 16
 %define libname %mklibname ngtcp2
 %define develname %mklibname -d ngtcp2
 %define lib32name libngtcp2
@@ -14,7 +14,7 @@
 
 Summary:	An implementation of the RFC9000 QUIC protocol
 Name:		ngtcp2
-Version:	0.19.0
+Version:	1.7.0
 Release:	1
 License:	MIT
 Group:		System/Libraries
@@ -104,8 +104,8 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %endif
 %ninja_install -C build
 
-%libpackage ngtcp2_crypto_quictls 1
-%libpackage ngtcp2_crypto_gnutls 7
+#libpackage ngtcp2_crypto_quictls 1
+%libpackage ngtcp2_crypto_gnutls 8
 
 %files
 
@@ -116,6 +116,7 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %{_includedir}/ngtcp2
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/*.so
+%{_prefix}/lib/cmake/ngtcp2
 %doc %{_docdir}/ngtcp2
 
 %if %{with compat32}
@@ -126,6 +127,6 @@ export "LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}"
 %{_prefix}/lib/pkgconfig/*.pc
 %{_prefix}/lib/*.so
 
-%lib32package ngtcp2_crypto_quictls 1
-%lib32package ngtcp2_crypto_gnutls 7
+#lib32package ngtcp2_crypto_quictls 1
+%lib32package ngtcp2_crypto_gnutls 8
 %endif
