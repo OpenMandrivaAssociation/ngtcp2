@@ -14,18 +14,16 @@
 
 Summary:	An implementation of the RFC9000 QUIC protocol
 Name:		ngtcp2
-Version:	1.8.1
+Version:	1.9.0
 Release:	1
 License:	MIT
 Group:		System/Libraries
 URL:		https://github.com/ngtcp2/ngtcp2
 Source0:	https://github.com/ngtcp2/ngtcp2/releases/download/v%{version}/ngtcp2-%{version}.tar.xz
 BuildRequires:	cmake ninja
-BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(gnutls)
 %if %{with compat32}
 BuildRequires:	libc6
-BuildRequires:	devel(libssl)
 BuildRequires:	devel(libgnutls)
 %endif
 
@@ -78,13 +76,13 @@ ln -s ngtcp2_crypto_quictls.h crypto/includes/ngtcp2/ngtcp2_crypto_openssl.h
 #define build_ldflags -O2 -fno-lto
 %cmake32 -G Ninja \
 	-DENABLE_STATIC_LIB=OFF \
-	-DENABLE_OPENSSL:BOOL=ON \
+	-DENABLE_OPENSSL:BOOL=OFF \
 	-DENABLE_GNUTLS:BOOL=ON
 cd ..
 %endif
 %cmake -G Ninja \
 	-DENABLE_STATIC_LIB=OFF \
-	-DENABLE_OPENSSL:BOOL=ON \
+	-DENABLE_OPENSSL:BOOL=OFF \
 	-DENABLE_GNUTLS:BOOL=ON
 
 %build
