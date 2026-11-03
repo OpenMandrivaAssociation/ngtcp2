@@ -25,6 +25,8 @@ BuildRequires:	pkgconfig(gnutls)
 %if %{with compat32}
 BuildRequires:	libc6
 BuildRequires:	devel(libgnutls)
+BuildRequires:	gcc
+BuildRequires:	gcc-c++
 %endif
 
 %description
@@ -73,11 +75,15 @@ fi
 ln -s ngtcp2_crypto_quictls.h crypto/includes/ngtcp2/ngtcp2_crypto_openssl.h
 
 %if %{with compat32}
-#define build_ldflags -O2 -fno-lto
+# clang cannot link -m32: the i386 compiler-rt builtins are not packaged.
+export CC=gcc
+export CXX=g++
 %cmake32 -G Ninja \
 	-DENABLE_STATIC_LIB=OFF \
 	-DENABLE_OPENSSL:BOOL=OFF \
 	-DENABLE_GNUTLS:BOOL=ON
+unset CC
+unset CXX
 cd ..
 %endif
 %cmake -G Ninja \
